@@ -107,6 +107,19 @@ void blinkCallback(void)
     led1 = !led1;
 }
 
+void printInfo()
+{
+    /* Print out device MAC address to the console*/
+    Gap::AddressType_t addr_type;
+    Gap::Address_t address;
+    BLE::Instance().gap().getAddress(&addr_type, address);
+    printf("DEVICE MAC ADDRESS: ");
+    for (int i = 5; i >= 1; i--){
+        printf("%02x:", address[i]);
+    }
+    printf("%02x\r\n", address[0]);
+}
+
 void bleInitComplete(BLE::InitializationCompleteCallbackContext *context)
 {
     BLE&        ble = context->ble;
@@ -116,6 +129,8 @@ void bleInitComplete(BLE::InitializationCompleteCallbackContext *context)
         print_error(err, "BLE initialisation failed");
         return;
     }
+
+    printInfo();
 
     // Set up the advertising flags. Note: not all combination of flags are valid
     // BREDR_NOT_SUPPORTED: Device does not support Basic Rate or Enchanced Data Rate, It is Low Energy only.

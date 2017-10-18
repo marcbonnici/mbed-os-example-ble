@@ -64,6 +64,19 @@ void onBleInitError(BLE &ble, ble_error_t error)
    /* Initialization error handling should go here */
 }
 
+void printInfo()
+{
+    /* Print out device MAC address to the console*/
+    Gap::AddressType_t addr_type;
+    Gap::Address_t address;
+    BLE::Instance().gap().getAddress(&addr_type, address);
+    printf("DEVICE MAC ADDRESS: ");
+    for (int i = 5; i >= 1; i--){
+        printf("%02x:", address[i]);
+    }
+    printf("%02x\r\n", address[0]);
+}
+
 void bleInitComplete(BLE::InitializationCompleteCallbackContext *params)
 {
     BLE&        ble   = params->ble;
@@ -77,6 +90,8 @@ void bleInitComplete(BLE::InitializationCompleteCallbackContext *params)
     if (ble.getInstanceID() != BLE::DEFAULT_INSTANCE) {
         return;
     }
+
+    printInfo();
 
     ble.gap().onDisconnection(disconnectionCallback);
 
