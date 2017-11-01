@@ -35,46 +35,7 @@ void disconnectionCallback(const Gap::DisconnectionCallbackParams_t *params)
     BLE::Instance().gap().startAdvertising();
 }
 
-void updateSensorValue() {
-    batteryLevel++;
-    if (batteryLevel > 100) {
-        batteryLevel = 20;
-    }
-
-    batteryServicePtr->updateBatteryLevel(batteryLevel);
-}
-
-void blinkCallback(void)
-{
-    led1 = !led1; /* Do blinky on LED1 while we're waiting for BLE events */
-
-    BLE &ble = BLE::Instance();
-    if (ble.gap().getState().connected) {
-        eventQueue.call(updateSensorValue);
-    }
-}
-
-/**
- * This function is called when the ble initialization process has failled
- */
-void onBleInitError(BLE &ble, ble_error_t error)
-{
-    /* Initialization error handling should go here */
-}
-
-void printInfo()
-{
-    /* Print out device MAC address to the console*/
-    Gap::AddressType_t addr_type;
-    Gap::Address_t address;
-    BLE::Instance().gap().getAddress(&addr_type, address);
-    printf("DEVICE MAC ADDRESS: ");
-    for (int i = 5; i >= 1; i--){
-        printf("%02x:", address[i]);
-    }
-    printf("%02x\r\n", address[0]);
-}
-
+void updateSenso
 /**
  * Callback triggered when the ble initialization process has finished
  */
@@ -92,7 +53,7 @@ void bleInitComplete(BLE::InitializationCompleteCallbackContext *params)
     /* Ensure that it is the default instance of BLE */
     if(ble.getInstanceID() != BLE::DEFAULT_INSTANCE) {
         return;
-    }
+    
 
     printInfo();
 
@@ -102,28 +63,11 @@ void bleInitComplete(BLE::InitializationCompleteCallbackContext *params)
     batteryServicePtr = new BatteryService(ble, batteryLevel);
 
     /* Setup advertising */
-    ble.gap().accumulateAdvertisingPayload(GapAdvertisingData::BREDR_NOT_SUPPORTED | GapAdvertisingData::LE_GENERAL_DISCOVERABLE);
-    ble.gap().accumulateAdvertisingPayload(GapAdvertisingData::COMPLETE_LIST_16BIT_SERVICE_IDS, (uint8_t *) uuid16_list, sizeof(uuid16_list));
-    ble.gap().accumulateAdvertisingPayload(GapAdvertisingData::COMPLETE_LOCAL_NAME, (uint8_t *) DEVICE_NAME, sizeof(DEVICE_NAME));
-    ble.gap().setAdvertisingType(GapAdvertisingParams::ADV_CONNECTABLE_UNDIRECTED);
-    ble.gap().setAdvertisingInterval(1000); /* 1000ms */
-    ble.gap().startAdvertising();
-}
-
-void scheduleBleEventsProcessing(BLE::OnEventsToProcessCallbackContext* context) {
-    BLE &ble = BLE::Instance();
-    eventQueue.call(Callback<void()>(&ble, &BLE::processEvents));
-}
-
-int main()
-{
-    eventQueue.call_every(500, blinkCallback);
-
-    BLE &ble = BLE::Instance();
-    ble.onEventsToProcess(scheduleBleEventsProcessing);
-    ble.init(bleInitComplete);
-
-    eventQueue.dispatch_forever();
+    
+    ble.gap().accumulateAis
+        
+        ingData::COMPLETE_LIST_16BIT_SERVICE_IDS, (uint8_t *) uuid16_list, sizeof(uuid16_list));
+  
 
     return 0;
 }
